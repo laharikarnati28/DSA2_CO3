@@ -1,0 +1,175 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Player {
+
+    int id;
+    String name;
+
+    Player(int id, String name) {
+
+        this.id = id;
+        this.name = name;
+    }
+}
+
+class Graph {
+
+    int vertices;
+
+    ArrayList<ArrayList<Integer>> adjList;
+
+    Player[] players;
+
+    // Constructor
+    Graph(int vertices) {
+
+        this.vertices = vertices;
+
+        adjList = new ArrayList<>();
+
+        players = new Player[vertices];
+
+        for (int i = 0; i < vertices; i++) {
+
+            adjList.add(new ArrayList<>());
+        }
+    }
+
+    // Add Player
+    void addPlayer(int index, int id, String name) {
+
+        players[index] = new Player(id, name);
+    }
+
+    // Add Connection
+    void addEdge(int source, int destination) {
+
+        adjList.get(source).add(destination);
+
+        adjList.get(destination).add(source);
+    }
+
+    // DFS Traversal
+    void dfs(int start, boolean[] visited) {
+
+        visited[start] = true;
+
+        System.out.println(
+            "Player ID: " + players[start].id +
+            " -> Name: " + players[start].name
+        );
+
+        for (int neighbor : adjList.get(start)) {
+
+            if (!visited[neighbor]) {
+
+                dfs(neighbor, visited);
+            }
+        }
+    }
+
+    // Display Graph
+    void displayConnections() {
+
+        System.out.println("\nPlayer Connections:");
+
+        for (int i = 0; i < vertices; i++) {
+
+            System.out.print(
+                players[i].name + " -> "
+            );
+
+            for (int neighbor : adjList.get(i)) {
+
+                System.out.print(
+                    players[neighbor].name + " "
+                );
+            }
+
+            System.out.println();
+        }
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println(
+            "SportsAnalytics – DFS Tournament System"
+        );
+
+        // Number of players
+        System.out.print(
+            "\nEnter number of players: "
+        );
+
+        int n = sc.nextInt();
+
+        Graph graph = new Graph(n);
+
+        // Input Player Details
+        for (int i = 0; i < n; i++) {
+
+            System.out.println(
+                "\nEnter Details of Player " + i
+            );
+
+            System.out.print("Enter Player ID: ");
+
+            int id = sc.nextInt();
+
+            sc.nextLine();
+
+            System.out.print("Enter Player Name: ");
+
+            String name = sc.nextLine();
+
+            graph.addPlayer(i, id, name);
+        }
+
+        // Number of connections
+        System.out.print(
+            "\nEnter number of connections: "
+        );
+
+        int edges = sc.nextInt();
+
+        // Input connections
+        System.out.println(
+            "\nEnter Connections (source destination):"
+        );
+
+        for (int i = 0; i < edges; i++) {
+
+            int source = sc.nextInt();
+
+            int destination = sc.nextInt();
+
+            graph.addEdge(source, destination);
+        }
+
+        // Display Connections
+        graph.displayConnections();
+
+        // DFS Traversal
+        boolean[] visited = new boolean[n];
+
+        System.out.print(
+            "\nEnter starting player index for DFS: "
+        );
+
+        int start = sc.nextInt();
+
+        System.out.println(
+            "\nDFS Traversal Starting From Player " + start + ":"
+        );
+
+        graph.dfs(start, visited);
+
+        sc.close();
+    }
+}
